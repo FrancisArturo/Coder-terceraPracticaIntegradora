@@ -20,6 +20,7 @@ export default class sessionRoutes {
         this.router.post(`${this.path}/login`, this.sessionController.loginUserController);
         this.router.get(`${this.path}/logout`, this.sessionController.logoutUserController);
         this.router.post(`${this.path}/recover`, this.sessionController.recoverPasswordController);
+        this.router.post(`${this.path}/recover/complete`, handlePolicies(["pswRecover"]), this.sessionController.recoverCompletePswController);
         this.router.get(`${this.path}/user`, handlePolicies(["admin", "user"]), this.sessionController.getUserByIdController);
         this.router.get(`${this.path}/github`, passport.authenticate("github", { scope: [ 'user:email' ], session: false}));
         this.router.get(`${this.path}/github/callback`, passport.authenticate("github", { failureRedirect: "/api/v1/session/failedlogin", session: false }), this.sessionController.githubLoginController);

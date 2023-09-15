@@ -14,7 +14,8 @@ export default class viewsRoutes {
     initializeRoutes() {
         this.router.get(`${this.path}/login`, this.viewsController.loginViewController);
         this.router.get(`${this.path}/register`, this.viewsController.registerViewController);
-        this.router.get (`${this.path}/recover`, this.viewsController.recoverViewController);
+        this.router.get (`${this.path}/recover`,  this.viewsController.recoverViewController);
+        this.router.get (`${this.path}/recover/:tid`, handlePolicies(["pswRecover"]), this.viewsController.recoverAuthorizedController);
         this.router.get(`${this.path}/home`, handlePolicies(["admin", "user"]), this.viewsController.homeViewController);
         this.router.get(`${this.path}/cart/:cid`, this.viewsController.getProductsCartViewController);
         this.router.get (`${this.path}/addproduct`, this.viewsController.addProductViewController);

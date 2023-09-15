@@ -18,6 +18,13 @@ export default class ViewsController {
     recoverViewController = async ( req, res) => {
         res.render("recover");
     }
+    recoverAuthorizedController = async (req, res) => {
+        if (req.user) {
+            res.render("recovercomplete");
+        } else {
+            res.render("recover");
+        }
+    }
     addProductViewController = async (req, res) => {
         res.render("addproduct");
     }

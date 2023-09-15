@@ -48,14 +48,26 @@ export default class UsersDao {
             if (!userFound) {
                 return "User not found";
             }
-            const pswHashed = await hashPassword(user.password);
+            return userFound;
+        } catch (error) {
+            throw new Error("password recovery error");
+        }
+        
+    }
+    recoverCompletePswDao = async (email, psw) => {
+        try {
+            const userFound = await userModel.findOne({ email: email });
+            const isMatch = await comparePassword(psw, userFound.password);
+            if (isMatch) {
+                return "the password must be different from the previous one";
+            }
+            const pswHashed = await hashPassword(psw);
             userFound.password = pswHashed;
             await userFound.save();
             return userFound;
         } catch (error) {
             throw new Error("password recovery error");
         }
-        
     }
     updateUserDao = async (uid, userUpdate) => {
         try {

@@ -17,6 +17,10 @@ export default class UsersRepository {
         let result = await this.dao.recoverPasswordDao(user);
         return result;
     }
+    recoverCompletePsw = async (email, psw) => {
+        let result = await this.dao.recoverCompletePswDao(email, psw);
+        return result;
+    }
     updateUser = async (uid, userUpdate) => {
         let result = await this.dao.updateUserDao(uid, userUpdate);
         return result;

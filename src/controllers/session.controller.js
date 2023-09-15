@@ -1,7 +1,8 @@
-import { ADMIN_EMAIL, ADMIN_PASSWORD } from "../config/config.js";
+import { ADMIN_EMAIL, ADMIN_PASSWORD, EMAIL } from "../config/config.js";
 import UserDTO from "../dao/DTOs/user.dto.js";
 import { CartsService, UsersService } from "../repositories/index.js";
 import {generateJWT} from "../utils/jwt.js";
+import { transporter } from "../utils/transporter.js";
 
 
 export default class SessionController {
@@ -89,15 +90,55 @@ export default class SessionController {
         try {
             const user = await this.usersService.recoverPassword(req.body);
             if (user === "User not found") {
-                return res.render("recover", {error: "User not found"});
+                return res.status(400).json({ message: error.message });
             }
-            return res.redirect("/views/login");
+            const signUser = {
+                email: user.email,
+                role: "pswRecover"
+            };
+            const token = generateJWT({...signUser});
+            const sendEmail = await transporter.sendMail({
+                from: EMAIL,
+                to: user.email,
+                subject: `Recover your password`,
+                html: `
+                <div>
+                    <h2>Complete your password recover</h2>
+                    <div>
+                        <p>Follow the next link to continue the process</p>
+                        <br>
+                        <br>  
+                        <a href="http://localhost:8000/views/recover/${token}">CLICK HERE</a>
+                        <br>
+                        <br>
+                        <p>This link has a duration of 30 min, After this you will have to request a new link</p>
+                    </div>
+                </div>
+                `,
+            });
+            return res.cookie("cookieToken", token, {
+                maxAge:60*60*1000,
+                httpOnly: true
+            }).json({ message: "an email was sent"});
         }
         catch (error) {
             res.status(400).json({ message: error.message });
         }
     }
-
+    recoverCompletePswController = async (req, res) => {
+        try {
+            const user = req.user.user.email;
+            const psw = req.body;
+            const updatePsw = await this.usersService.recoverCompletePsw(user, psw.password);
+            if (updatePsw == "the password must be different from the previous one") {
+                return res.status(400).json({ message: "the password must be different from the previous one" });
+            }
+            res.clearCookie("cookieToken");
+            return res.json({message: "Password update successfully", updatePsw});
+        } catch (error) {
+            
+        }
+    }
     currentController = async (req, res) => {
         const user = req.user.user;
         const currentUser = new UserDTO(user)
@@ -115,7 +156,6 @@ export default class SessionController {
                 role: userLogin.role,
             };
             const token = generateJWT({...signUser});
-                //console.log(token)
                 return res.cookie("cookieToken", token, {
                     maxAge:60*60*1000,
                     httpOnly: true

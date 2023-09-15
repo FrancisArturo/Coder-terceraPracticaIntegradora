@@ -5,11 +5,12 @@ function handlePolicies(policies) {
         if (policies.length === 1 && policies[0] === "public") {
             return next();
         }
-
         passport.authenticate("jwt", {session: false}, (err, userJWT, info) => {
-            //console.log(userJWT)
             if (err) {
                 return next(err);
+            }
+            if (!userJWT && policies.includes("pswRecover")) {
+                return next()
             }
             if (!userJWT) {
                 return res.status(401).send({message: "denied access, invalid token"});
