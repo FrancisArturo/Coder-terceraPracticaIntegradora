@@ -11,6 +11,18 @@ const updateProductThumbnail= document.getElementById("updatethumbnail");
 const updateBtn = document.getElementById("updateProductBtn");
 
 
+async function clearValues() {
+    updateIdproduct.value = "";
+    updateProductTitle.value = "";
+    updateProductPrice.value = "";
+    updateProductDescription.value = "";
+    updateProductStock.value = "";
+    updateProductCategory.value = "";
+    updateProductStatus.value = "";
+    updateProductCode.value = "";
+    updateProductThumbnail.value = "";
+}
+
 async function updateProduct(pid, productUpdate) {
     const res = await fetch(`/api/v1/products/${pid}`, {
         method: "PUT",
@@ -28,40 +40,32 @@ updateBtn.addEventListener("click", async (e) => {
     const productUpdateArray = [];
     let productValuesCheck;
     const pid = updateIdproduct.value;
-    const product = {
-        title: updateProductTitle.value,
-        description: updateProductDescription.value,
-        code: updateProductCode.value,
-        price: updateProductPrice.value,
-        status: updateProductStatus.value,
-        stock: updateProductStock.value,
-        category: updateProductCategory.value,
-        thumbnail: updateProductThumbnail.value
-    };
-    const productKeys = Object.keys(product);
-    productValuesCheck = productKeys.map(function (key) {
-        if (product[key]) {
-            productUpdateArray.push([key, product[key]])
+        const product = {
+            title: updateProductTitle.value,
+            description: updateProductDescription.value,
+            code: updateProductCode.value,
+            price: updateProductPrice.value,
+            status: updateProductStatus.value,
+            stock: updateProductStock.value,
+            category: updateProductCategory.value,
+            thumbnail: updateProductThumbnail.value
         };
-    });
-    const productUpdate = Object.fromEntries(productUpdateArray);
-    const data = await updateProduct(pid, productUpdate);
-    if (data.message == "Product updated successfully") {
-        alert("Product updated successfully");
-    } else if (data.message == "No product found") {
-        alert("No product found");
-    } else {
-        alert("Update Product Error");
-    }
-    updateIdproduct.value = "";
-    updateProductTitle.value = "";
-    updateProductPrice.value = "";
-    updateProductDescription.value = "";
-    updateProductStock.value = "";
-    updateProductCategory.value = "";
-    updateProductStatus.value = "";
-    updateProductCode.value = "";
-    updateProductThumbnail.value = "";
+        const productKeys = Object.keys(product);
+        productValuesCheck = productKeys.map(function (key) {
+            if (product[key]) {
+                productUpdateArray.push([key, product[key]])
+            };
+        });
+        const productUpdate = Object.fromEntries(productUpdateArray);
+        const data = await updateProduct(pid, productUpdate);
+        if (data.message == "Product updated successfully") {
+            alert("Product updated successfully");
+        } else if (data.message == "No product found") {
+            alert("No product found");
+        } else {
+            alert("Update Product Error");
+        }
+        await clearValues();
 });
 
 

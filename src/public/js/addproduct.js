@@ -24,7 +24,7 @@ async function addProduct(product) {
 
 addBtn.addEventListener("click", async (e) => {
     e.preventDefault();
-    const product = {
+    let product = {
         title: addProductTitle.value,
         description: addProductDescription.value,
         code: addProductCode.value,
@@ -34,6 +34,14 @@ addBtn.addEventListener("click", async (e) => {
         category: addProductCategory.value,
         thumbnail: addProductThumbnail.value,
     };
+    const userFound = await fetch("/api/v1/session/current", {
+        method: "GET",
+    });
+    const resUser = await userFound.json()
+    const userRole = resUser.currentUser.role
+    if (userRole == "premium") {
+        product.owner = resUser.currentUser.email;
+    }
     const data = await addProduct(product);
     if (data.message === "Product added successfully") {
         alert("Product added successfully");

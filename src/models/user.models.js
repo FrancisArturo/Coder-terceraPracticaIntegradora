@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
             ref: "cart",
         }
     },
-    role: String,
+    role: {type: String, default: "user"},
 });
 
 userSchema.pre("findById", function () {

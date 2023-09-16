@@ -139,6 +139,26 @@ export default class SessionController {
             
         }
     }
+    updatePremiumController = async (req, res) => {
+        try {
+            const { uid } = req.params;
+            const user = await this.usersService.getUserById(uid);
+            if (!user) {
+                return res.json({ message: "user not found" })
+            }
+            if (user.role == "user") {
+                const updateUser = await this.usersService.updateUser(uid, { role: "premium" })
+                return res.json({ message: "user to premium update successfully"})
+            } else if (user.role == "premium") {
+                const updateUser = await this.usersService.updateUser(uid, { role: "user" })
+                return res.json({ message: "premium to user update successfully"})
+            } else {
+                return res.json({ message: "Unauthorized to update"})
+            }
+        } catch (error) {
+            res.status(400).json({ message: error.message }); 
+        }
+    }
     currentController = async (req, res) => {
         const user = req.user.user;
         const currentUser = new UserDTO(user)

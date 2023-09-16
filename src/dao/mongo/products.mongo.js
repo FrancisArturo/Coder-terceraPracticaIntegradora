@@ -7,7 +7,7 @@ export default class ProductsDao {
             const result = await productsModel.insertMany(products);
             return result;
         } catch (error) {
-            throw new Error("Error inserting products");
+            throw new Error(error);
         }
     }
     getallDao = async () => {

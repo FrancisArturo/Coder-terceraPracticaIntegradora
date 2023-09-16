@@ -3,6 +3,7 @@ import mongoosePaginate from "mongoose-paginate-v2";
 
 const productsCollection = "products";
 
+
 const productsSchema = new mongoose.Schema({
     title: { type: String, required: true, max: 100 },
     description: { type: String, required: true, max: 100 },
@@ -12,6 +13,7 @@ const productsSchema = new mongoose.Schema({
     stock: { type: Number, required: true },
     category: { type: String, required: true, max: 100 },
     thumbnail: { type: String, max: 100 },
+    owner: { type: String, default: "admin"}
 });
 
 

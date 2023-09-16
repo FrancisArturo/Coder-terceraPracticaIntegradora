@@ -3,6 +3,7 @@ export default class UserDTO {
         this.user = user.user,
         this.firstname = user.firstName,
         this.lastname = user.lastName,
+        this.email = user.email,
         this.role = user.role
     }
 }

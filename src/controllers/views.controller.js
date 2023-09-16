@@ -40,6 +40,7 @@ export default class ViewsController {
         const user = req.user;
         let adminRole = false;
         let userRole = false;
+        let premiumRole = false;
         let cartId;
         
         if (user.user.role == "admin"){
@@ -50,11 +51,17 @@ export default class ViewsController {
             const cartIdFound = String(userFound.carts);
             const cartIdMatch = cartIdFound.match(/[0-9a-f]{24}/i);
             cartId = cartIdMatch[0];
-        };
+        } else if (user.user.role == "premium"){
+            premiumRole = true;
+            const userFound = await this.usersService.getUserById(user.user.user);
+            const cartIdFound = String(userFound.carts);
+            const cartIdMatch = cartIdFound.match(/[0-9a-f]{24}/i);
+            cartId = cartIdMatch[0];
+        }
         
         try {
             const { docs, hasPrevPage, hasNextPage, nextPage, prevPage } = await this.productsService.getallProducts(limit, page, category, sort);
-            res.render("home", { products : docs, hasPrevPage, hasNextPage, nextPage, prevPage, page, limit, category, sort, user,cartId, adminRole, userRole });
+            res.render("home", { products : docs, hasPrevPage, hasNextPage, nextPage, prevPage, page, limit, category, sort, user,cartId, adminRole, userRole, premiumRole });
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
