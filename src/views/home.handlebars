@@ -10,16 +10,25 @@
         <button type="button"><a href="/views/cart/{{cartId}}">Cart</a></button>
         <br>
     {{/unless}}
+    {{#if userRole}}
+        <br>
+        <button type="button"><a href="/api/v1/session/premium/{{user.user.user}}">update to premium</a></button>
+    {{/if}}
+    {{#if premiumRole}}
+        <br>
+        <button type="button"><a href="/api/v1/session/premium/{{user.user.user}}">update to user</a></button>
+        <br>
+    {{/if}}
     {{#unless userRole}}
         <br>
         <button><a href="/views/addproduct">Add a product</a></button>
         <br>
         <br>
+    {{/unless}}
     {{#if adminRole}}
         <button><a href="/views/updateproduct">Update a product</a></button>
         <br>
-    {{/if}}
-    {{/unless}}
+    {{/if}} 
     <h2>Products List</h2>
     {{#if premiumRole}}
         {{#each products}}

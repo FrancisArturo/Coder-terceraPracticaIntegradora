@@ -148,10 +148,36 @@ export default class SessionController {
             }
             if (user.role == "user") {
                 const updateUser = await this.usersService.updateUser(uid, { role: "premium" })
-                return res.json({ message: "user to premium update successfully"})
+                res.clearCookie("cookieToken");
+                const userUpdated = await this.usersService.getUserById(uid);
+                const signUser = {
+                    user: userUpdated._id,
+                    firstName: userUpdated.firstName,
+                    lastName: userUpdated.lastName,
+                    email: userUpdated.email,
+                    role: userUpdated.role,
+                };
+                const token = generateJWT({...signUser});
+                    return res.cookie("cookieToken", token, {
+                        maxAge:60*60*1000,
+                        httpOnly: true
+                    }).redirect('/views/home');
             } else if (user.role == "premium") {
                 const updateUser = await this.usersService.updateUser(uid, { role: "user" })
-                return res.json({ message: "premium to user update successfully"})
+                res.clearCookie("cookieToken");
+                const userUpdated = await this.usersService.getUserById(uid);
+                const signUser = {
+                    user: userUpdated._id,
+                    firstName: userUpdated.firstName,
+                    lastName: userUpdated.lastName,
+                    email: userUpdated.email,
+                    role: userUpdated.role,
+                };
+                const token = generateJWT({...signUser});
+                    return res.cookie("cookieToken", token, {
+                        maxAge:60*60*1000,
+                        httpOnly: true
+                    }).redirect('/views/home');
             } else {
                 return res.json({ message: "Unauthorized to update"})
             }

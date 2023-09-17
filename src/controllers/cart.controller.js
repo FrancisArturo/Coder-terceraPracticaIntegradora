@@ -1,7 +1,7 @@
 import { EMAIL, PHONE } from "../config/config.js";
 import { CartsService, TicketsService, UsersService } from "../repositories/index.js";
 import { transporter } from "../utils/transporter.js";
-import { client } from "../utils/twilioClient.js";
+//import { client } from "../utils/twilioClient.js";
 
 
 export default class CartsController {
@@ -193,14 +193,14 @@ export default class CartsController {
                 </div>
                 `,
             })
-            const userFound = await this.usersService.getUserById(user.user.user);
-            if (userFound.phone) {
-                const sendSms = await client.messages.create({
-                body: `Thanks for your Purchase ${user.user.firstName} ${user.user.lastName}, your ticket N° is: ${Ticketcreate.code}`,
-                from: PHONE,
-                to: `+${userFound.phone}`,
-                })
-            };
+            // const userFound = await this.usersService.getUserById(user.user.user);
+            // if (userFound.phone) {
+            //     const sendSms = await client.messages.create({
+            //     body: `Thanks for your Purchase ${user.user.firstName} ${user.user.lastName}, your ticket N° is: ${Ticketcreate.code}`,
+            //     from: PHONE,
+            //     to: `+${userFound.phone}`,
+            //     })
+            // };
             return res.render('ticket', {Ticketcreate, cartProducts})
         } catch (error) {
             res.status(400).json({ message: error.message });
